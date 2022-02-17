@@ -1,29 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { ADD_TO_CAR, DELETE_ITEM } from "./constants/index";
 
-export const onlineStore = createSlice({
-  name: "storage",
-  initialState: {
-    carrito: [],
-  },
-  reducers: {
-    addItem: (state, { payload }) => {
-      const [exists] = state.carrito.filter((el) => el.id === payload.id);
-      console.log(exists);
-      console.log(payload);
-      console.log(state.carrito);
-      if (!exists) {
-        state.carrito = [...state.carrito, payload];
-      }
-      console.log(state.carrito);
-    },
-    deleteItem: (state, { payload }) => {
-      state.carrito = state.carrito.filter((el) => el.id === payload.id);
-    },
-  },
-});
+const initialState = {
+  carrito: [],
+};
 
-export const { addItem, deleteItem } = onlineStore.actions;
+const onlineStore = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TO_CAR:
+      return {
+        ...state,
+        carrito: [...state.carrito, action.payload],
+      };
+    case DELETE_ITEM:
+      return {
+        ...state,
+        carrito: state.carrito.filter(
+          (el) => parseInt(el.product.id) !== parseInt(action.payload.id)
+        ),
+      };
 
-export const getCarrito = ({ onlineStore }) => onlineStore.carrito;
+    default:
+      return state;
+  }
+};
 
-export default onlineStore.reducer;
+export default onlineStore;

@@ -1,13 +1,15 @@
-import { useSelector } from "react-redux";
 import { useState } from "react";
+import { connect } from "react-redux";
 
-import { getCarrito } from "../store/storage";
 import LayoutCartItem from "../components/LayoutCartItem";
 
-const CartDetail = () => {
-  const [model, setModel] = useState({});
+const mapStateToProps = (carritoState) => {
+  const { carrito } = carritoState;
+  return { carrito };
+};
 
-  const carritoState = useSelector(getCarrito);
+const CartDetailComponent = ({ carrito }) => {
+  const [model, setModel] = useState({});
 
   const valueHanlder = (event) => {
     const name = event.target.name;
@@ -23,15 +25,15 @@ const CartDetail = () => {
   return (
     <div className="container mx-auto my-8 justify-center flex md:flex-row flex-col">
       <div className="flex flex-col flex-1 m-2">
-        {carritoState.length === 0 && (
+        {carrito.length === 0 && (
           <p className="text-center">No hay productos en el carrito :(</p>
         )}
-        {carritoState.length > 0 &&
-          carritoState.map(({ product, qty }) => (
+        {carrito.length > 0 &&
+          carrito.map(({ product, qty }) => (
             <LayoutCartItem product={product} qty={qty} key={product.id} />
           ))}
       </div>
-      {carritoState.length > 0 && (
+      {carrito.length > 0 && (
         <div className="m-2 border p-4 mt-4">
           <form onSubmit={submitHanlder} className="flex flex-col">
             <div className="flex flex-col my-2">
@@ -65,5 +67,7 @@ const CartDetail = () => {
     </div>
   );
 };
+
+const CartDetail = connect(mapStateToProps)(CartDetailComponent);
 
 export default CartDetail;

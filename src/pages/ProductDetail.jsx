@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addItem } from "../store/storage";
 
+import { addItem } from "../store/actions/index";
 import Fetcher from "../utils/Fetcher";
 import Loader from "../components/Loader";
 
-const ProductDetail = () => {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addItem: (payload) => dispatch(addItem(payload)),
+  };
+};
+
+const ProductDetailComponent = ({ addItem }) => {
   const [product, setProduct] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const { id } = useParams();
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
-    dispatch(addItem({ product, qty }));
+    addItem({ product, qty });
     navigate("/cart-detail");
   };
 
@@ -140,5 +145,7 @@ const ProductDetail = () => {
     </div>
   );
 };
+
+const ProductDetail = connect(null, mapDispatchToProps)(ProductDetailComponent);
 
 export default ProductDetail;

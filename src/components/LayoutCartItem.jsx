@@ -1,18 +1,23 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { deleteItem } from "../store/storage";
 
-const LayoutProduct = ({ product, qty }) => {
+import { connect } from "react-redux";
+import { deleteItem } from "../store/actions/index";
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteItem: (payload) => dispatch(deleteItem(payload)),
+  };
+};
+
+const LayoutProductComponent = ({ product, qty, deleteItem }) => {
   const { id, title, image, category, description } = product;
-  const dispatch = useDispatch();
 
   const myStyle = {
     backgroundImage: `url(${image})`,
   };
 
   const deleteHandler = () => {
-    console.log(product);
-    dispatch(deleteItem({ product }));
+    deleteItem(product);
   };
 
   return (
@@ -41,5 +46,7 @@ const LayoutProduct = ({ product, qty }) => {
     </div>
   );
 };
+
+const LayoutProduct = connect(null, mapDispatchToProps)(LayoutProductComponent);
 
 export default LayoutProduct;
